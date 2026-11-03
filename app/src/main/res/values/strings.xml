@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name" translatable="false">DerYurt</string>
+    <string name="github_url" translatable="false">https://github.com/DerFurt/DerYurt</string>
+    <string name="portal_url" translatable="false">https://wifi.gsb.gov.tr/login.html</string>
+
+    <!-- İlk açılış / bilgi ekranı -->
+    <string name="cred_subtitle">Logs you in when you connect to GSB wifi. No more waiting for the portal page.</string>
+    <string name="cred_username_label">TR ID number</string>
+    <string name="cred_username_hint">Your 11-digit number</string>
+    <string name="cred_password_label">GSB wifi password</string>
+    <string name="cred_password_hint">The password you use on the portal</string>
+    <string name="cred_privacy">Your details are stored encrypted on this phone only and are sent only to <b>wifi.gsb.gov.tr</b>. Our code is open source, <a href="https://github.com/DerFurt/DerYurt">check it on GitHub</a>.</string>
+    <string name="cred_save_first">Save and start</string>
+    <string name="cred_save">Save</string>
+    <string name="cred_disclaimer">DerYurt is an independent app. It has no official connection to the Ministry of Youth and Sports.</string>
+    <string name="cred_error_username_empty">Enter your ID number</string>
+    <string name="cred_error_password_empty">Enter your password</string>
+
+    <!-- Ana ekran: durum kartı -->
+    <string name="status_online_title">Internet is on</string>
+    <string name="status_online_desc">Your GSB wifi session is open. Last login: %1$s.</string>
+    <string name="status_running_title">Logging in…</string>
+    <string name="status_running_desc">The portal server is slow, this can take up to 30 seconds.</string>
+    <string name="status_wrong_title">Couldn\'t log in</string>
+    <string name="status_wrong_locked_desc">Two attempts failed, your password may be wrong. I stopped automatic attempts so your account doesn\'t get locked.</string>
+    <string name="status_wrong_once_desc">Your password may be wrong. It will be tried once more on the next connection.</string>
+    <string name="status_captcha_title">The portal wants verification</string>
+    <string name="status_captcha_desc">Because of too many attempts, the portal asks for an image verification. Log in once by hand in the browser, then DerYurt continues automatically.</string>
+    <string name="status_other_title">Your account is open on another device</string>
+    <string name="status_other_desc">GSB allows only one device at a time. Log out on the other device, then tap Try again or wait a little.</string>
+    <string name="status_away_title">You\'re not on GSB wifi</string>
+    <string name="status_away_desc">You\'ll be logged in automatically when you connect to the dorm wifi.</string>
+    <string name="status_away_auto_off_desc">Automatic login is off. You can log in with the button below.</string>
+    <string name="status_slow_title">The portal didn\'t respond</string>
+    <string name="status_slow_desc">The server is very slow or down. It will be tried again automatically in a while.</string>
+    <string name="status_no_credentials_title">No login details</string>
+
+    <string name="btn_login_now">Log in now</string>
+    <string name="btn_edit_credentials">Edit details</string>
+    <string name="btn_retry">Try again</string>
+    <string name="btn_open_portal">Open portal in browser</string>
+
+    <!-- Hesap -->
+    <string name="section_account">Account</string>
+    <string name="account_username">TR ID number</string>
+    <string name="btn_edit">Edit</string>
+
+    <!-- Ayarlar -->
+    <string name="section_settings">Settings</string>
+    <string name="section_connection">Connection</string>
+    <string name="content_desc_settings">Open settings</string>
+    <string name="content_desc_back">Back</string>
+    <string name="setting_auto_title">Automatic login</string>
+    <string name="setting_auto_desc">Logs in by itself when you connect to GSB wifi</string>
+    <string name="setting_watch_title">Keep watching the session</string>
+    <string name="setting_watch_desc">Logs in again right away if the session drops. While on, a permanent notification stays in the notification bar.</string>
+    <string name="setting_battery_title">Battery optimization</string>
+    <string name="setting_battery_on_desc">On. Your phone may stop the app in the background.</string>
+    <string name="setting_battery_off_desc">Off. DerYurt can work freely in the background.</string>
+    <string name="setting_battery_fix">Fix</string>
+
+    <!-- Görünüm -->
+    <string name="section_appearance">Appearance</string>
+    <string name="setting_theme_color">Theme color</string>
+    <string name="setting_dark_mode">Dark theme</string>
+    <string name="color_orange">Orange</string>
+    <string name="color_blue">Blue</string>
+    <string name="color_green">Green</string>
+    <string name="color_red">Red</string>
+
+    <string name="footer_github">Open source · GitHub · DerFurt</string>
+
+    <!-- Bildirimler -->
+    <string name="channel_results">Login results</string>
+    <string name="channel_problems">Login problems</string>
+    <string name="channel_background">Background work</string>
+    <string name="notif_success_title">Internet is on ✓</string>
+    <string name="notif_success_text">Logged in to GSB wifi.</string>
+    <string name="notif_fail_title">Couldn\'t log in</string>
+    <string name="notif_fail_text">Your password may be wrong.</string>
+    <string name="notif_fail_locked_text">Your password may be wrong. Automatic attempts stopped.</string>
+    <string name="notif_captcha_title">The portal wants verification</string>
+    <string name="notif_captcha_text">You need to log in once by hand in the browser.</string>
+    <string name="notif_other_title">Your account is open on another device</string>
+    <string name="notif_other_text">Log out on the other device, then try again.</string>
+    <string name="notif_slow_title">The portal didn\'t respond</string>
+    <string name="notif_slow_text">The server may be slow.</string>
+    <string name="notif_action_settings">Settings</string>
+    <string name="notif_action_retry">Try again</string>
+    <string name="notif_action_open_portal">Open portal</string>
+    <string name="notif_watching">Watching the session</string>
+    <string name="notif_working">Logging in…</string>
+
+    <!-- Hızlı ayarlar kutucuğu -->
+    <string name="tile_label">GSB login</string>
+    <string name="tile_online">Connected</string>
+    <string name="tile_offline">Not connected</string>
+    <string name="tile_running">Logging in…</string>
+</resources>

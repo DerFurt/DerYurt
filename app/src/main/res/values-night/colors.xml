@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- KOYU tema: DerFurt Tasarım Sistemi §1 değerleri birebir. -->
+<resources>
+    <color name="theme_orange_accent">#FF9E40</color>
+    <color name="theme_blue_accent">#64B5F6</color>
+    <color name="theme_green_accent">#81C784</color>
+    <color name="theme_red_accent">#EF5350</color>
+
+    <color name="dy_bg">#121212</color>
+    <color name="dy_surface">#1E1E1E</color>
+    <color name="dy_surface_raised">#262626</color>
+    <color name="dy_input_bg_raised">#1B1B1B</color>
+    <color name="dy_outline">#333333</color>
+    <color name="dy_input_outline">#2E2E2E</color>
+    <color name="dy_text_primary">#EEEEEE</color>
+    <color name="dy_text_secondary">#AAAAAA</color>
+    <color name="dy_text_tertiary">#777777</color>
+    <color name="dy_on_primary">#FFFFFF</color>
+    <color name="dy_switch_off_track">#333333</color>
+    <color name="dy_switch_off_thumb">#777777</color>
+
+    <color name="dy_success">#5CC27A</color>
+    <color name="dy_error">#FF6B5E</color>
+    <color name="dy_warning">#FFB547</color>
+</resources>

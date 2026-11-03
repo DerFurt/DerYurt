@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="cred_subtitle">GSB wifi\'sine bağlanınca senin yerine giriş yapar. Portal sayfasıyla uğraşmazsın.</string>
+    <string name="cred_username_label">TC kimlik numarası</string>
+    <string name="cred_username_hint">11 haneli numaran</string>
+    <string name="cred_password_label">GSB wifi şifresi</string>
+    <string name="cred_password_hint">Portalda kullandığın şifre</string>
+    <string name="cred_privacy">Bilgilerin sadece bu telefonda şifreli saklanır ve sadece <b>wifi.gsb.gov.tr</b>\'ye gönderilir. Kodumuz açık kaynak, <a href="https://github.com/DerFurt/DerYurt">GitHub\'da incele</a>.</string>
+    <string name="cred_save_first">Kaydet ve başla</string>
+    <string name="cred_save">Kaydet</string>
+    <string name="cred_disclaimer">DerYurt bağımsız bir uygulamadır. Gençlik ve Spor Bakanlığı ile resmi bir bağlantısı yoktur.</string>
+    <string name="cred_error_username_empty">TC kimlik numaranı yaz</string>
+    <string name="cred_error_password_empty">Şifreni yaz</string>
+
+    <string name="status_online_title">İnternet açık</string>
+    <string name="status_online_desc">GSB wifi\'sinde oturumun açık. Son giriş: %1$s.</string>
+    <string name="status_running_title">Giriş yapılıyor…</string>
+    <string name="status_running_desc">Portal sunucusu yavaş, 30 saniyeye kadar sürebilir.</string>
+    <string name="status_wrong_title">Giriş yapılamadı</string>
+    <string name="status_wrong_locked_desc">İki deneme başarısız oldu, şifre hatalı olabilir. Seni kilitletmemek için otomatik denemeyi durdurdum.</string>
+    <string name="status_wrong_once_desc">Şifre hatalı olabilir. Bir sonraki bağlantıda bir kez daha denenecek.</string>
+    <string name="status_captcha_title">Portal doğrulama istiyor</string>
+    <string name="status_captcha_desc">Çok deneme olduğu için portal resimli doğrulama istiyor. Tarayıcıdan bir kez elle giriş yap, sonra DerYurt yine otomatik devam eder.</string>
+    <string name="status_other_title">Hesabın başka cihazda açık</string>
+    <string name="status_other_desc">GSB aynı anda tek cihaza izin veriyor. Diğer cihazdan çıkış yap, sonra "Tekrar dene"ye bas ya da biraz bekle.</string>
+    <string name="status_away_title">GSB wifi\'sinde değilsin</string>
+    <string name="status_away_desc">Yurt wifi\'sine bağlandığında otomatik giriş yapılacak.</string>
+    <string name="status_away_auto_off_desc">Otomatik giriş kapalı. Aşağıdaki butonla elle giriş yapabilirsin.</string>
+    <string name="status_slow_title">Portal yanıt vermedi</string>
+    <string name="status_slow_desc">Sunucu çok yavaş ya da kapalı. Biraz sonra kendiliğinden tekrar denenecek.</string>
+    <string name="status_no_credentials_title">Giriş bilgisi yok</string>
+
+    <string name="btn_login_now">Şimdi giriş yap</string>
+    <string name="btn_edit_credentials">Bilgileri düzenle</string>
+    <string name="btn_retry">Tekrar dene</string>
+    <string name="btn_open_portal">Portalı tarayıcıda aç</string>
+
+    <string name="section_account">Hesap</string>
+    <string name="account_username">TC kimlik no</string>
+    <string name="btn_edit">Düzenle</string>
+
+    <string name="section_settings">Ayarlar</string>
+    <string name="section_connection">Bağlantı</string>
+    <string name="content_desc_settings">Ayarları aç</string>
+    <string name="content_desc_back">Geri</string>
+    <string name="setting_auto_title">Otomatik giriş</string>
+    <string name="setting_auto_desc">GSB wifi\'sine bağlanınca kendiliğinden giriş yapar</string>
+    <string name="setting_watch_title">Oturumu sürekli izle</string>
+    <string name="setting_watch_desc">Oturum düşerse anında yeniden girer. Açıkken bildirim çubuğunda kalıcı bir bildirim durur.</string>
+    <string name="setting_battery_title">Pil optimizasyonu</string>
+    <string name="setting_battery_on_desc">Açık. Telefon uygulamayı arka planda durdurabilir.</string>
+    <string name="setting_battery_off_desc">Kapalı. DerYurt arka planda rahat çalışır.</string>
+    <string name="setting_battery_fix">Düzelt</string>
+
+    <string name="section_appearance">Görünüm</string>
+    <string name="setting_theme_color">Tema rengi</string>
+    <string name="setting_dark_mode">Koyu tema</string>
+    <string name="color_orange">Turuncu</string>
+    <string name="color_blue">Mavi</string>
+    <string name="color_green">Yeşil</string>
+    <string name="color_red">Kırmızı</string>
+
+    <string name="footer_github">Açık kaynak · GitHub · DerFurt</string>
+
+    <string name="channel_results">Giriş sonuçları</string>
+    <string name="channel_problems">Giriş sorunları</string>
+    <string name="channel_background">Arka plan işleri</string>
+    <string name="notif_success_title">İnternet açık ✓</string>
+    <string name="notif_success_text">GSB wifi\'sine giriş yapıldı.</string>
+    <string name="notif_fail_title">Giriş yapılamadı</string>
+    <string name="notif_fail_text">Şifre hatalı olabilir.</string>
+    <string name="notif_fail_locked_text">Şifre hatalı olabilir. Otomatik deneme durduruldu.</string>
+    <string name="notif_captcha_title">Portal doğrulama istiyor</string>
+    <string name="notif_captcha_text">Tarayıcıdan bir kez elle giriş yapman gerekiyor.</string>
+    <string name="notif_other_title">Hesabın başka cihazda açık</string>
+    <string name="notif_other_text">Diğer cihazdan çıkış yap, sonra tekrar dene.</string>
+    <string name="notif_slow_title">Portal yanıt vermedi</string>
+    <string name="notif_slow_text">Sunucu yavaş olabilir.</string>
+    <string name="notif_action_settings">Ayarlar</string>
+    <string name="notif_action_retry">Tekrar dene</string>
+    <string name="notif_action_open_portal">Portalı aç</string>
+    <string name="notif_watching">Oturum izleniyor</string>
+    <string name="notif_working">Giriş yapılıyor…</string>
+
+    <string name="tile_label">GSB giriş</string>
+    <string name="tile_online">Bağlı</string>
+    <string name="tile_offline">Bağlı değil</string>
+    <string name="tile_running">Giriş yapılıyor…</string>
+</resources>

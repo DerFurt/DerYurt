@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Mockup ekran 2-4: ana ekran (durum kartı + hesap). Ayarlar sağ üstteki butonla ayrı ekranda. -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dy_top_bar_height"
+        android:background="@color/dy_surface"
+        android:elevation="4dp"
+        android:paddingStart="@dimen/dy_space_4"
+        android:paddingEnd="@dimen/dy_space_1">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:text="@string/app_name"
+            android:textAppearance="@style/TextAppearance.DerYurt.ScreenTitle" />
+
+        <ImageButton
+            android:id="@+id/btnSettings"
+            android:layout_width="@dimen/dy_touch_min"
+            android:layout_height="@dimen/dy_touch_min"
+            android:layout_gravity="center_vertical|end"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="@string/content_desc_settings"
+            android:padding="@dimen/dy_space_3"
+            android:src="@drawable/ic_settings"
+            app:tint="@color/dy_text_primary" />
+    </FrameLayout>
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="@dimen/dy_space_4">
+
+            <!-- Durum kartı -->
+            <com.google.android.material.card.MaterialCardView
+                style="@style/Widget.DerYurt.Card"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_horizontal"
+                    android:orientation="vertical"
+                    android:paddingStart="@dimen/dy_space_4"
+                    android:paddingTop="@dimen/dy_space_6"
+                    android:paddingEnd="@dimen/dy_space_4"
+                    android:paddingBottom="@dimen/dy_space_4">
+
+                    <FrameLayout
+                        android:id="@+id/statusIconBg"
+                        android:layout_width="@dimen/dy_status_icon_circle"
+                        android:layout_height="@dimen/dy_status_icon_circle">
+
+                        <ImageView
+                            android:id="@+id/statusIcon"
+                            android:layout_width="@dimen/dy_status_icon"
+                            android:layout_height="@dimen/dy_status_icon"
+                            android:layout_gravity="center"
+                            android:importantForAccessibility="no"
+                            android:src="@drawable/ic_wifi" />
+                    </FrameLayout>
+
+                    <TextView
+                        android:id="@+id/statusTitle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/dy_space_3"
+                        android:accessibilityLiveRegion="polite"
+                        android:gravity="center"
+                        android:textAppearance="@style/TextAppearance.DerYurt.Title" />
+
+                    <TextView
+                        android:id="@+id/statusDesc"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/dy_space_2"
+                        android:gravity="center"
+                        android:textAppearance="@style/TextAppearance.DerYurt.BodySmall"
+                        android:textColor="@color/dy_text_secondary" />
+
+                    <com.google.android.material.progressindicator.LinearProgressIndicator
+                        android:id="@+id/statusProgress"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/dy_space_4"
+                        android:layout_marginBottom="@dimen/dy_space_2"
+                        android:indeterminate="true"
+                        android:visibility="gone"
+                        app:trackCornerRadius="@dimen/dy_radius_full" />
+
+                    <LinearLayout
+                        android:id="@+id/statusButtons"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/dy_space_3"
+                        android:orientation="horizontal">
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/btnStatusSecondary"
+                            style="@style/Widget.DerYurt.Button"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1" />
+
+                        <Space
+                            android:id="@+id/statusButtonGap"
+                            android:layout_width="@dimen/dy_space_3"
+                            android:layout_height="0dp" />
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/btnStatusPrimary"
+                            style="@style/Widget.DerYurt.Button"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1" />
+                    </LinearLayout>
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- Hesap -->
+            <TextView
+                style="@style/DerYurt.SectionTitle"
+                android:text="@string/section_account" />
+
+            <com.google.android.material.card.MaterialCardView
+                style="@style/Widget.DerYurt.Card"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:padding="@dimen/dy_space_3">
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/account_username"
+                            android:textAppearance="@style/TextAppearance.DerYurt.Body" />
+
+                        <TextView
+                            android:id="@+id/maskedUsername"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/dy_space_1"
+                            android:letterSpacing="0.06"
+                            android:textAppearance="@style/TextAppearance.DerYurt.BodySmall"
+                            android:textColor="@color/dy_text_secondary" />
+                    </LinearLayout>
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btnEdit"
+                        style="@style/Widget.DerYurt.Button.Text"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/btn_edit" />
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <TextView
+                android:id="@+id/footer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dy_space_6"
+                android:background="?attr/selectableItemBackground"
+                android:gravity="center"
+                android:minHeight="@dimen/dy_touch_min"
+                android:textAppearance="@style/TextAppearance.DerYurt.Caption"
+                android:textColor="@color/dy_text_tertiary" />
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+</LinearLayout>

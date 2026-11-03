@@ -1,0 +1,30 @@
+*.iml
+.gradle/
+/local.properties
+local.properties*
+/build
+/app/build
+/captures
+.externalNativeBuild
+.cxx
+/.idea/
+/.kotlin/
+/.vscode/
+.DS_Store
+
+# İmza anahtarları ASLA repoya girmez
+*.jks
+*.keystore
+keystore.properties
+
+# Derleme çıktıları ve loglar
+*.apk
+*.aab
+*.log
+*logcat*.txt
+
+.claude/
+graphify-out/
+
+# Ajan çalışma notları (yerelde kalır)
+CLAUDE.md

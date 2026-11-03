@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- DerFurt Tasarım Sistemi. values = AÇIK tema, values-night = KOYU tema (varsayılan koyu). -->
+<resources>
+    <!-- Tema renkleri (iki modda aynı) -->
+    <color name="theme_orange_primary">#FF6D00</color>
+    <color name="theme_blue_primary">#1E88E5</color>
+    <color name="theme_green_primary">#43A047</color>
+    <color name="theme_red_primary">#E53935</color>
+
+    <!-- Açık tema: tonlu zemin üstündeki yazı için koyu tonlar -->
+    <color name="theme_orange_accent">#C25400</color>
+    <color name="theme_blue_accent">#1565C0</color>
+    <color name="theme_green_accent">#2E7D32</color>
+    <color name="theme_red_accent">#C62828</color>
+
+    <!-- Nötr roller (açık) -->
+    <color name="dy_bg">#F4F4F5</color>
+    <color name="dy_surface">#FFFFFF</color>
+    <color name="dy_surface_raised">#FFFFFF</color>
+    <color name="dy_input_bg_raised">#F2F2F3</color>
+    <color name="dy_outline">#E3E3E6</color>
+    <color name="dy_input_outline">#D4D4D8</color>
+    <color name="dy_text_primary">#1A1A1A</color>
+    <color name="dy_text_secondary">#5C5C60</color>
+    <color name="dy_text_tertiary">#76767B</color>
+    <color name="dy_on_primary">#FFFFFF</color>
+    <color name="dy_switch_off_track">#D4D4D8</color>
+    <color name="dy_switch_off_thumb">#8A8A8F</color>
+
+    <!-- Durum renkleri (açık zeminde okunabilir tonlar) -->
+    <color name="dy_success">#2E9E52</color>
+    <color name="dy_error">#D93B30</color>
+    <color name="dy_warning">#B87400</color>
+</resources>

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="dy_radius_s">8dp</dimen>
+    <dimen name="dy_radius_m">16dp</dimen>
+    <dimen name="dy_radius_l">24dp</dimen>
+    <dimen name="dy_radius_full">999dp</dimen>
+    <dimen name="dy_space_1">4dp</dimen>
+    <dimen name="dy_space_2">8dp</dimen>
+    <dimen name="dy_space_3">12dp</dimen>
+    <dimen name="dy_space_4">16dp</dimen>
+    <dimen name="dy_space_6">24dp</dimen>
+    <dimen name="dy_space_8">32dp</dimen>
+    <dimen name="dy_touch_min">48dp</dimen>
+    <dimen name="dy_top_bar_height">56dp</dimen>
+    <dimen name="dy_status_icon_circle">72dp</dimen>
+    <dimen name="dy_status_icon">36dp</dimen>
+    <dimen name="dy_app_icon">72dp</dimen>
+    <dimen name="dy_app_icon_radius">20dp</dimen>
+    <dimen name="dy_info_icon_box">36dp</dimen>
+    <dimen name="dy_chip_height">24dp</dimen>
+</resources>
