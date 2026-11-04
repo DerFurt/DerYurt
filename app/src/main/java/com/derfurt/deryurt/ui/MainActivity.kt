@@ -11,6 +11,7 @@ import android.net.NetworkCapabilities
 import androidx.core.net.toUri
 import android.os.Bundle
 import android.text.format.DateUtils
+import android.widget.LinearLayout
 import androidx.annotation.ColorInt
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
@@ -18,6 +19,8 @@ import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import com.derfurt.deryurt.R
 import com.derfurt.deryurt.data.CredentialStore
+import com.derfurt.deryurt.data.SavedSession
+import java.util.Locale
 import com.derfurt.deryurt.databinding.ActivityMainBinding
 import com.derfurt.deryurt.trigger.LoginWork
 import com.derfurt.deryurt.trigger.NetworkWatch
@@ -54,7 +57,7 @@ class MainActivity : BaseActivity() {
 
         // Zorla durdurma sonrası sistem kaydı silinmiş olabilir: uygulama açılınca her zaman yeniden kur.
         NetworkWatch.arm(this, force = true)
-        if (store.watchSession) PortalWatchService.start(this)
+        if (store.watchActive) PortalWatchService.start(this)
 
         themeAtCreate = store.themeColor
         binding.btnSettings.setOnClickListener { startActivity(Intent(this, SettingsActivity::class.java)) }
@@ -90,9 +93,12 @@ class MainActivity : BaseActivity() {
         }
         binding.maskedUsername.text = credentialStore.load()?.let { CredentialStore.mask(it.username) }.orEmpty()
         render()
+        checkUnknownWifi()
     }
 
     override fun onStop() {
+        // Wifi yokken kapatılıyorsa uyandırma kaydını tazele (bkz. NetworkWatch.arm).
+        if (::binding.isInitialized) NetworkWatch.arm(this, force = true)
         if (::binding.isInitialized) {
             store.prefs.unregisterOnSharedPreferenceChangeListener(prefsListener)
             try {
@@ -101,6 +107,23 @@ class MainActivity : BaseActivity() {
             }
         }
         super.onStop()
+    }
+
+    /**
+     * Uygulama açılınca kontroller yeniden başlar:
+     *  - wifi'de internet yok (giriş sayfası bekliyor) → hemen giriş denenir, butona basmak gerekmez
+     *  - internet var ama bu bağlantı henüz GSB diye tanınmıyor → sessiz kontrol (hesap + kota okunur)
+     * Otomatik iş olduğu için kilitleri kaldırmaz; aynı anda ikinci iş açılmaz.
+     */
+    private fun checkUnknownWifi() {
+        if (!store.autoLogin || store.running) return
+        val wifi = NetworkWatch.currentWifi(this) ?: return
+        if (!NetworkWatch.isValidated(this, wifi)) {
+            LoginWork.enqueue(this, manual = false, fresh = true, source = "app_open_login")
+            return
+        }
+        if (wifi.toString() == store.lastGsbNetwork) return
+        LoginWork.enqueue(this, manual = false, source = "app_open")
     }
 
     // ── Durum kartı ──
@@ -128,8 +151,26 @@ class MainActivity : BaseActivity() {
             UiState.ONLINE -> {
                 val time = DateUtils.formatDateTime(this, store.lastSuccessAt, DateUtils.FORMAT_SHOW_TIME or
                     (if (DateUtils.isToday(store.lastSuccessAt)) 0 else DateUtils.FORMAT_SHOW_DATE))
-                showStatus(R.drawable.ic_check, success, R.string.status_online_title, getString(R.string.status_online_desc, time))
-                buttons(tonal = R.string.btn_login_now to ::loginNow)
+                val session = NetworkWatch.currentWifi(this)?.let { store.sessionFor(it.toString()) }
+                val desc = buildString {
+                    append(getString(R.string.status_online_desc, time))
+                    if (session != null) append('\n').append(getString(R.string.status_account_line, session.accountName))
+                    quotaLine(session)?.let { append('\n').append(it) }
+                }
+                showStatus(R.drawable.ic_check, success, R.string.status_online_title, desc)
+                // Kayıtlı hesabın adı henüz bilinmiyorsa (uygulama hiç kendisi girmedi) oturumun kimin olduğunu
+                // sadece kullanıcı bilebilir: "Bu benim hesabım değil" ile kayıtlı hesaba geçebilir.
+                if (session != null && store.ownAccountName == null) {
+                    buttons(tonal = R.string.btn_not_my_account to ::switchAccount)
+                } else {
+                    buttons(tonal = R.string.btn_login_now to ::loginNow)
+                }
+            }
+            UiState.OTHER_ACCOUNT -> {
+                val session = NetworkWatch.currentWifi(this)?.let { store.sessionFor(it.toString()) }
+                showStatus(R.drawable.ic_error, warning, R.string.status_other_account_title,
+                    getString(R.string.status_other_account_desc, session?.accountName.orEmpty()))
+                buttons(primary = R.string.btn_switch_account to ::switchAccount)
             }
             UiState.WRONG_LOCKED, UiState.WRONG_ONCE -> {
                 val locked = store.loadGuard().lockedOut
@@ -142,8 +183,12 @@ class MainActivity : BaseActivity() {
                 buttons(primary = R.string.btn_open_portal to { openUrl(getString(R.string.portal_url)) })
             }
             UiState.OTHER_DEVICE -> {
-                showStatus(R.drawable.ic_error, warning, R.string.status_other_title, getString(R.string.status_other_desc))
-                buttons(primary = R.string.btn_retry to ::loginNow)
+                val since = store.otherSessionSince
+                val desc = getString(R.string.status_other_desc) +
+                    (if (since != null) " " + getString(R.string.other_session_since, since) else "")
+                showStatus(R.drawable.ic_error, warning, R.string.status_other_title, desc)
+                // "Diğer cihazdan çıkar" yarım genişliğe sığmıyor: butonlar alt alta.
+                buttons(tonal = R.string.btn_retry to ::loginNow, primary = R.string.btn_kick_other to ::kickOther, stacked = true)
             }
             UiState.SLOW -> {
                 showStatus(R.drawable.ic_wifi_off, warning, R.string.status_slow_title, getString(R.string.status_slow_desc))
@@ -171,14 +216,32 @@ class MainActivity : BaseActivity() {
         binding.statusDesc.isVisible = desc != null
     }
 
-    /** Kartın altındaki butonlar: soldaki tonlu (ikincil), sağdaki dolu (ana). Biri yoksa diğeri tam genişlik. */
+    /**
+     * Kartın altındaki butonlar: soldaki tonlu (ikincil), sağdaki dolu (ana). Biri yoksa diğeri tam genişlik.
+     * stacked=true: uzun etiketler için alt alta, ikisi de tam genişlik (üstte ikincil, altta ana).
+     */
     private fun buttons(
         tonal: Pair<Int, () -> Unit>? = null,
         primary: Pair<Int, () -> Unit>? = null,
+        stacked: Boolean = false,
     ) {
         setButton(binding.btnStatusSecondary, tonal, isPrimary = false)
         setButton(binding.btnStatusPrimary, primary, isPrimary = true)
         binding.statusButtonGap.isVisible = tonal != null && primary != null
+
+        val row = binding.statusButtons
+        row.orientation = if (stacked) LinearLayout.VERTICAL else LinearLayout.HORIZONTAL
+        for (b in listOf(binding.btnStatusSecondary, binding.btnStatusPrimary)) {
+            b.layoutParams = (b.layoutParams as LinearLayout.LayoutParams).apply {
+                width = if (stacked) LinearLayout.LayoutParams.MATCH_PARENT else 0
+                weight = if (stacked) 0f else 1f
+            }
+        }
+        val gapSize = resources.getDimensionPixelSize(R.dimen.dy_space_3)
+        binding.statusButtonGap.layoutParams = binding.statusButtonGap.layoutParams.apply {
+            width = if (stacked) 0 else gapSize
+            height = if (stacked) gapSize else 0
+        }
     }
 
     private fun setButton(b: MaterialButton, spec: Pair<Int, () -> Unit>?, isPrimary: Boolean) {
@@ -192,6 +255,30 @@ class MainActivity : BaseActivity() {
     private fun loginNow() {
         store.running = true
         LoginWork.enqueue(this, manual = true, source = "app")
+    }
+
+    /** Bu telefonda açık oturumu (başka hesap) kapatıp kayıtlı hesapla gir. */
+    private fun switchAccount() {
+        store.running = true
+        LoginWork.enqueue(this, manual = true, source = "app_switch", switch = true)
+    }
+
+    /** "Kalan kota: 30,1 GB / 32 GB · bitiş 30.11.2026" */
+    private fun quotaLine(s: SavedSession?): String? {
+        val left = s?.quotaRemainingMb ?: return null
+        val total = s.quotaTotalMb ?: return null
+        val exp = s.quotaExpires
+        return if (exp != null) getString(R.string.status_quota_line, formatMb(left), formatMb(total), exp)
+        else getString(R.string.status_quota_line_no_date, formatMb(left), formatMb(total))
+    }
+
+    private fun formatMb(mb: Float): String =
+        if (mb >= 1024f) String.format(Locale.getDefault(), "%.1f GB", mb / 1024f)
+        else String.format(Locale.getDefault(), "%.0f MB", mb)
+
+    private fun kickOther() {
+        store.running = true
+        LoginWork.enqueue(this, manual = true, source = "app_kick", kick = true)
     }
 
     private fun openCredentials() = startActivity(Intent(this, CredentialsActivity::class.java))

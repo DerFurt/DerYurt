@@ -9,9 +9,11 @@ class LoginRunnerTest {
 
     private class FakePortal(var results: MutableList<LoginOutcome>, var online: Boolean = false) : PortalApi {
         var loginCalls = 0
+        var lastKick: Boolean? = null
         override fun isOnline() = online
-        override fun login(credentials: Credentials): LoginOutcome {
+        override fun login(credentials: Credentials, kickOtherDevice: Boolean, endCurrentSession: Boolean): LoginOutcome {
             loginCalls++
+            lastKick = kickOtherDevice
             return if (results.isEmpty()) LoginOutcome.WRONG_CREDENTIALS else results.removeAt(0)
         }
     }
@@ -189,5 +191,15 @@ class LoginRunnerTest {
     fun credentialsToString_hidesSecrets() {
         assertFalse(creds.toString().contains("12345678901"))
         assertFalse(creds.toString().contains("sahte"))
+    }
+
+    @Test
+    fun kickFlag_isPassedToPortal_andDefaultsToFalse() {
+        val portal = FakePortal(mutableListOf(LoginOutcome.SUCCESS, LoginOutcome.SUCCESS))
+        val r = LoginRunner(portal, MemGuard())
+        r.run(creds, manual = false)
+        assertEquals(false, portal.lastKick)
+        r.run(creds, manual = true, kickOtherDevice = true)
+        assertEquals(true, portal.lastKick)
     }
 }

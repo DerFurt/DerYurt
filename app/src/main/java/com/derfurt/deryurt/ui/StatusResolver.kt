@@ -7,7 +7,7 @@ import com.derfurt.deryurt.data.StatusStore
 import com.derfurt.deryurt.trigger.NetworkWatch
 
 /** Ana ekran durum kartının ve kutucuğun gösterdiği durum. */
-enum class UiState { NO_CREDENTIALS, RUNNING, ONLINE, WRONG_LOCKED, WRONG_ONCE, CAPTCHA, OTHER_DEVICE, SLOW, AWAY }
+enum class UiState { NO_CREDENTIALS, RUNNING, ONLINE, WRONG_LOCKED, WRONG_ONCE, CAPTCHA, OTHER_DEVICE, OTHER_ACCOUNT, SLOW, AWAY }
 
 object StatusResolver {
     fun resolve(context: Context): UiState {
@@ -25,7 +25,15 @@ object StatusResolver {
         val last = store.lastOutcome
         if (onGsb && (NetworkWatch.isValidated(context, wifi) ||
                 last == LoginOutcome.SUCCESS || last == LoginOutcome.ALREADY_ONLINE)
-        ) return UiState.ONLINE
+        ) {
+            // İnternet açık ama portal oturumu kayıtlı hesaptan farklı bir hesapla açık olabilir.
+            val session = store.sessionFor(wifi.toString())
+            val own = store.ownAccountName
+            if (session != null && own != null && !StatusStore.sameAccount(session.accountName, own)) {
+                return UiState.OTHER_ACCOUNT
+            }
+            return UiState.ONLINE
+        }
 
         return when (last) {
             LoginOutcome.WRONG_CREDENTIALS -> UiState.WRONG_ONCE

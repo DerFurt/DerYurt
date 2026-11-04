@@ -44,10 +44,11 @@ object Notifier {
         )
     }
 
-    fun success(context: Context) {
+    fun success(context: Context, kickedOther: Boolean = false) {
+        val text = context.getString(if (kickedOther) R.string.notif_success_kicked_text else R.string.notif_success_text)
         val n = base(context, CH_RESULTS)
             .setContentTitle(context.getString(R.string.notif_success_title))
-            .setContentText(context.getString(R.string.notif_success_text))
+            .setContentText(text)
             .setTimeoutAfter(SUCCESS_TIMEOUT_MS)
             .addAction(0, context.getString(R.string.notif_action_settings), openApp(context))
             .build()
@@ -75,12 +76,25 @@ object Notifier {
         post(context, ID_RESULT, n)
     }
 
-    fun otherDevice(context: Context) {
-        val text = context.getString(R.string.notif_other_text)
+    /**
+     * @param since diğer oturumun başlama saati (portaldan), yoksa null
+     * @param retaken otomatik kapatma bu bağlantıda zaten kullanıldı ve diğer cihaz oturumu geri aldı
+     * @param kickFailed diğer oturum kapatıldı ama portal hâlâ izin vermedi
+     */
+    fun otherDevice(context: Context, since: String?, retaken: Boolean, kickFailed: Boolean) {
+        val text = buildString {
+            append(context.getString(when {
+                kickFailed -> R.string.notif_other_kick_failed_text
+                retaken -> R.string.notif_other_retaken_text
+                else -> R.string.notif_other_text
+            }))
+            if (since != null) append(' ').append(context.getString(R.string.other_session_since, since))
+        }
         val n = base(context, CH_PROBLEMS)
             .setContentTitle(context.getString(R.string.notif_other_title))
             .setContentText(text)
             .setStyle(NotificationCompat.BigTextStyle().bigText(text))
+            .addAction(0, context.getString(R.string.btn_kick_other), kick(context))
             .addAction(0, context.getString(R.string.notif_action_retry), retry(context))
             .build()
         post(context, ID_RESULT, n)
@@ -136,6 +150,12 @@ object Notifier {
     private fun retry(context: Context): PendingIntent = PendingIntent.getBroadcast(
         context, 11,
         Intent(context, ActionReceiver::class.java).setAction(ActionReceiver.ACTION_RETRY),
+        PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE,
+    )
+
+    private fun kick(context: Context): PendingIntent = PendingIntent.getBroadcast(
+        context, 13,
+        Intent(context, ActionReceiver::class.java).setAction(ActionReceiver.ACTION_KICK),
         PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE,
     )
 

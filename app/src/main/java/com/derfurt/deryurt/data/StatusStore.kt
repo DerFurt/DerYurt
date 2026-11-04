@@ -64,6 +64,64 @@ class StatusStore(context: Context) : GuardRepository {
         }
     }
 
+    /**
+     * Portal oturumu hatırlayıp interneti kendiliğinden açtı (ALREADY_ONLINE) ve bu wifi'nin GSB olduğu doğrulandı:
+     * ağ GSB olarak kaydedilir, ana ekran "İnternet açık" gösterir.
+     */
+    fun markGsbNetwork(networkId: String) {
+        prefs.edit {
+            putString(K_LAST_GSB_NET, networkId)
+            putLong(K_LAST_SUCCESS_AT, System.currentTimeMillis())
+        }
+    }
+
+    /** Diğer cihazdaki oturumun portalda görünen başlama saati (örn. "00:00"); yoksa null. */
+    var otherSessionSince: String?
+        get() = prefs.getString(K_OTHER_SINCE, null)
+        set(v) = prefs.edit { if (v == null) remove(K_OTHER_SINCE) else putString(K_OTHER_SINCE, v) }
+
+    /** Otomatik kapatmanın en son kullanıldığı wifi bağlantısı (bir bağlantıda en fazla bir kez). */
+    var lastAutoKickNetwork: String?
+        get() = prefs.getString(K_AUTO_KICK_NET, null)
+        set(v) = prefs.edit { putString(K_AUTO_KICK_NET, v) }
+
+    // ── Portal oturumu (hangi hesap, kota) ──
+    /**
+     * Kayıtlı hesabın portalda görünen adı. Uygulama kendi bilgileriyle giriş yapınca öğrenilir;
+     * bilgiler değişince silinir. Sadece telefonda durur, loglanmaz.
+     */
+    var ownAccountName: String?
+        get() = prefs.getString(K_OWN_NAME, null)
+        set(v) = prefs.edit { if (v == null) remove(K_OWN_NAME) else putString(K_OWN_NAME, v) }
+
+    /** Son görülen portal oturumu; sadece aynı wifi bağlantısındaysak geçerli. */
+    fun sessionFor(networkId: String): SavedSession? {
+        if (prefs.getString(K_SESSION_NET, null) != networkId) return null
+        val name = prefs.getString(K_SESSION_NAME, null) ?: return null
+        val total = prefs.getFloat(K_QUOTA_TOTAL, -1f)
+        val remaining = prefs.getFloat(K_QUOTA_LEFT, -1f)
+        return SavedSession(
+            accountName = name,
+            quotaTotalMb = total.takeIf { it >= 0f },
+            quotaRemainingMb = remaining.takeIf { it >= 0f },
+            quotaExpires = prefs.getString(K_QUOTA_EXPIRES, null),
+        )
+    }
+
+    fun saveSession(networkId: String, s: SavedSession) {
+        prefs.edit {
+            putString(K_SESSION_NET, networkId)
+            putString(K_SESSION_NAME, s.accountName)
+            putFloat(K_QUOTA_TOTAL, s.quotaTotalMb ?: -1f)
+            putFloat(K_QUOTA_LEFT, s.quotaRemainingMb ?: -1f)
+            if (s.quotaExpires == null) remove(K_QUOTA_EXPIRES) else putString(K_QUOTA_EXPIRES, s.quotaExpires)
+        }
+    }
+
+    fun clearSession() {
+        prefs.edit { remove(K_SESSION_NET); remove(K_SESSION_NAME) }
+    }
+
     fun clearOutcome() {
         prefs.edit { remove(K_LAST_OUTCOME) }
     }
@@ -76,6 +134,17 @@ class StatusStore(context: Context) : GuardRepository {
     var watchSession: Boolean
         get() = prefs.getBoolean(K_WATCH, false)
         set(v) = prefs.edit { putBoolean(K_WATCH, v) }
+
+    /**
+     * "Arka planda sürekli bağlı tut" servisi çalışmalı mı? Otomatik giriş kapalıyken servisin başlattığı
+     * işler hiçbir şey yapmaz; boşuna kalıcı bildirim durmasın diye ikisi birlikte açık olmalı.
+     */
+    val watchActive: Boolean get() = autoLogin && watchSession
+
+    /** Hesap başka cihazda açıksa o oturumu otomatik kapat. Varsayılan kapalı (Ahmet kararı, 04.11). */
+    var autoKickOther: Boolean
+        get() = prefs.getBoolean(K_AUTO_KICK, false)
+        set(v) = prefs.edit { putBoolean(K_AUTO_KICK, v) }
 
     var themeColor: String
         get() = prefs.getString(K_THEME, THEME_ORANGE) ?: THEME_ORANGE
@@ -107,6 +176,23 @@ class StatusStore(context: Context) : GuardRepository {
         private const val K_THEME = "theme_color"
         private const val K_DARK = "dark_mode"
         private const val K_ARMED = "armed_token"
+        private const val K_OTHER_SINCE = "other_session_since"
+        private const val K_AUTO_KICK = "auto_kick_other"
+        private const val K_AUTO_KICK_NET = "last_auto_kick_network"
+        private const val K_OWN_NAME = "own_account_name"
+        private const val K_SESSION_NET = "session_network"
+        private const val K_SESSION_NAME = "session_account_name"
+        private const val K_QUOTA_TOTAL = "quota_total_mb"
+        private const val K_QUOTA_LEFT = "quota_remaining_mb"
+        private const val K_QUOTA_EXPIRES = "quota_expires"
+
+        private val TR = java.util.Locale.forLanguageTag("tr")
+
+        /** Portal adları büyük harf ve sonda boşlukla verebiliyor: Türkçe kurallarla karşılaştır. */
+        fun sameAccount(a: String, b: String): Boolean {
+            fun norm(s: String) = s.trim().replace(Regex("\\s+"), " ").uppercase(TR)
+            return norm(a) == norm(b)
+        }
 
         const val THEME_ORANGE = "orange"
         const val THEME_BLUE = "blue"
@@ -114,3 +200,11 @@ class StatusStore(context: Context) : GuardRepository {
         const val THEME_RED = "red"
     }
 }
+
+/** Portalda görülen oturum: hangi hesapla açık, kota (MB). */
+data class SavedSession(
+    val accountName: String,
+    val quotaTotalMb: Float?,
+    val quotaRemainingMb: Float?,
+    val quotaExpires: String?,
+)

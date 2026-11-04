@@ -8,7 +8,12 @@ class Credentials(val username: String, val password: String) {
 /** Portalla konuşan taraf (gerçeği: net.GsbPortal). Testte sahtesi kullanılır. */
 interface PortalApi {
     fun isOnline(): Boolean
-    fun login(credentials: Credentials): LoginOutcome
+    /**
+     * kickOtherDevice=true: hesap başka cihazda açıksa o oturumu kapatıp yeniden girer.
+     * endCurrentSession=true: bu telefonda internet açıksa (örn. başka bir hesapla) önce o oturumu kapatır,
+     * sonra kayıtlı hesapla girer.
+     */
+    fun login(credentials: Credentials, kickOtherDevice: Boolean = false, endCurrentSession: Boolean = false): LoginOutcome
 }
 
 /** GuardState'in saklandığı yer (gerçeği: data.StatusStore). */
@@ -26,8 +31,15 @@ class LoginRunner(
     /**
      * @param manual kullanıcı istedi ("Şimdi giriş yap", "Tekrar dene", kutucuk): kilitler ve bekleme kalkar.
      * @param freshConnection wifi yeni bağlandı ya da oturum düştü: yavaşlık beklemesi sıfırlanır.
+     * @param kickOtherDevice hesap başka cihazda açıksa o oturum kapatılsın (buton ya da otomatik kapatma ayarı).
      */
-    fun run(credentials: Credentials?, manual: Boolean, freshConnection: Boolean = false): LoginOutcome {
+    fun run(
+        credentials: Credentials?,
+        manual: Boolean,
+        freshConnection: Boolean = false,
+        kickOtherDevice: Boolean = false,
+        endCurrentSession: Boolean = false,
+    ): LoginOutcome {
         if (credentials == null) return LoginOutcome.NO_CREDENTIALS
 
         val now = clock()
@@ -47,7 +59,7 @@ class LoginRunner(
         var outcome: LoginOutcome
         do {
             attempt++
-            outcome = portal.login(credentials)
+            outcome = portal.login(credentials, kickOtherDevice, endCurrentSession)
         } while (LoginPolicy.shouldRetryInRun(outcome, attempt))
 
         guard.saveGuard(LoginPolicy.next(state, outcome, clock()))

@@ -16,6 +16,8 @@ object LoginWork {
     const val KEY_MANUAL = "manual"
     const val KEY_FRESH = "fresh"
     const val KEY_SOURCE = "source"
+    const val KEY_KICK = "kick_other"
+    const val KEY_SWITCH = "switch_account"
     private const val UNIQUE_NOW = "login_now"
     private const val UNIQUE_PERIODIC = "login_periodic"
 
@@ -24,11 +26,21 @@ object LoginWork {
      * manual=false: wifi bağlandı / oturum düştü. Aynı anda ikinci iş açılmaz.
      * fresh=true: yeni bağlantı ya da oturum düşmesi; portal yavaşlığı beklemesi sıfırlanır.
      * source: sadece debug olay günlüğü için (connect, session_drop, app, tile, notif...).
+     * kick=true: hesap başka cihazda açıksa o oturumu kapat ("Diğer cihazdan çıkar" butonu).
+     * switch=true: bu telefonda başka hesapla açık oturumu kapatıp kayıtlı hesapla gir.
      */
-    fun enqueue(context: Context, manual: Boolean, fresh: Boolean = false, source: String) {
-        EventLog.add(context, "ENQUEUE", "$source manual=$manual fresh=$fresh")
+    fun enqueue(
+        context: Context,
+        manual: Boolean,
+        fresh: Boolean = false,
+        source: String,
+        kick: Boolean = false,
+        switch: Boolean = false,
+    ) {
+        EventLog.add(context, "ENQUEUE", "$source manual=$manual fresh=$fresh kick=$kick switch=$switch")
         val request = OneTimeWorkRequestBuilder<LoginWorker>()
-            .setInputData(workDataOf(KEY_MANUAL to manual, KEY_FRESH to fresh, KEY_SOURCE to source))
+            .setInputData(workDataOf(KEY_MANUAL to manual, KEY_FRESH to fresh, KEY_SOURCE to source,
+                KEY_KICK to kick, KEY_SWITCH to switch))
             .setExpedited(OutOfQuotaPolicy.RUN_AS_NON_EXPEDITED_WORK_REQUEST)
             .build()
         WorkManager.getInstance(context).enqueueUniqueWork(

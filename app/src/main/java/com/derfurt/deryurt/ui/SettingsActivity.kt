@@ -48,6 +48,7 @@ class SettingsActivity : BaseActivity() {
     private fun setupConnection() {
         tintSwitch(binding.switchAuto)
         tintSwitch(binding.switchWatch)
+        tintSwitch(binding.switchAutoKick)
 
         binding.switchAuto.isChecked = store.autoLogin
         binding.switchAuto.setOnCheckedChangeListener { _, on ->
@@ -58,17 +59,33 @@ class SettingsActivity : BaseActivity() {
             } else {
                 LoginWork.cancelPeriodic(this)
             }
+            // "Sürekli bağlı tut" otomatik girişe bağlı: kapanınca servis durur, açılınca (seçiliyse) geri gelir.
+            if (store.watchActive) PortalWatchService.start(this) else PortalWatchService.stop(this)
+            renderWatchEnabled()
         }
         binding.rowAuto.setOnClickListener { binding.switchAuto.toggle() }
 
         binding.switchWatch.isChecked = store.watchSession
         binding.switchWatch.setOnCheckedChangeListener { _, on ->
             store.watchSession = on
-            if (on) PortalWatchService.start(this) else PortalWatchService.stop(this)
+            if (store.watchActive) PortalWatchService.start(this) else PortalWatchService.stop(this)
         }
-        binding.rowWatch.setOnClickListener { binding.switchWatch.toggle() }
+        binding.rowWatch.setOnClickListener { if (store.autoLogin) binding.switchWatch.toggle() }
+        renderWatchEnabled()
+
+        binding.switchAutoKick.isChecked = store.autoKickOther
+        binding.switchAutoKick.setOnCheckedChangeListener { _, on -> store.autoKickOther = on }
+        binding.rowAutoKick.setOnClickListener { binding.switchAutoKick.toggle() }
 
         binding.rowBattery.setOnClickListener { openBatterySettings() }
+    }
+
+    /** Otomatik giriş kapalıyken "Arka planda sürekli bağlı tut" soluk ve dokunulamaz (seçimi korunur). */
+    private fun renderWatchEnabled() {
+        val enabled = store.autoLogin
+        binding.switchWatch.isEnabled = enabled
+        binding.rowWatch.isEnabled = enabled
+        binding.rowWatch.alpha = if (enabled) 1f else 0.4f
     }
 
     private fun renderBattery() {

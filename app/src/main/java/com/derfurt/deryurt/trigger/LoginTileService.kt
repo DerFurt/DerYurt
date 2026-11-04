@@ -36,7 +36,7 @@ class LoginTileService : TileService() {
                 tile.state = Tile.STATE_ACTIVE
                 setSubtitle(tile, getString(R.string.tile_running))
             }
-            UiState.ONLINE -> {
+            UiState.ONLINE, UiState.OTHER_ACCOUNT -> {
                 tile.state = Tile.STATE_ACTIVE
                 setSubtitle(tile, getString(R.string.tile_online))
             }

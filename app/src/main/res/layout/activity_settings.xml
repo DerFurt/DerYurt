@@ -152,6 +152,49 @@
                         android:background="@color/dy_outline" />
 
                     <LinearLayout
+                        android:id="@+id/rowAutoKick"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal"
+                        android:paddingTop="@dimen/dy_space_3"
+                        android:paddingBottom="@dimen/dy_space_3">
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/setting_autokick_title"
+                                android:textAppearance="@style/TextAppearance.DerYurt.Body" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="@dimen/dy_space_1"
+                                android:text="@string/setting_autokick_desc"
+                                android:textAppearance="@style/TextAppearance.DerYurt.BodySmall"
+                                android:textColor="@color/dy_text_secondary" />
+                        </LinearLayout>
+
+                        <com.google.android.material.materialswitch.MaterialSwitch
+                            android:id="@+id/switchAutoKick"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="@dimen/dy_space_3"
+                            android:contentDescription="@string/setting_autokick_title" />
+                    </LinearLayout>
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="@color/dy_outline" />
+
+                    <LinearLayout
                         android:id="@+id/rowBattery"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"

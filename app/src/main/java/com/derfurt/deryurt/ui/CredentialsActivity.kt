@@ -86,6 +86,8 @@ class CredentialsActivity : BaseActivity() {
         // Yeni bilgilerle kilitler sıfırdan başlar.
         store.resetGuard()
         store.clearOutcome()
+        // Hesap değişmiş olabilir: kayıtlı hesabın portal adı yeni girişte yeniden öğrenilir.
+        store.ownAccountName = null
 
         if (firstRun && Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU &&
             ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED

@@ -15,7 +15,7 @@ import com.derfurt.deryurt.data.EventLog
 import com.derfurt.deryurt.data.StatusStore
 
 /**
- * İsteğe bağlı "Oturumu sürekli izle" (ayarlardan açılır, varsayılan kapalı).
+ * İsteğe bağlı "Arka planda sürekli bağlı tut" (ayarlardan açılır, varsayılan kapalı; otomatik giriş de açık olmalı).
  * Canlı bir ağ dinleyicisi tutar; wifi "doğrulanmış" durumdan captive portal'a dönerse
  * (oturum düştü) hemen giriş işi başlatır. Açıkken kalıcı, sessiz bir bildirim gösterir.
  */
@@ -57,7 +57,7 @@ class PortalWatchService : Service() {
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        if (!StatusStore(this).watchSession) {
+        if (!StatusStore(this).watchActive) {
             stopSelf()
             return START_NOT_STICKY
         }

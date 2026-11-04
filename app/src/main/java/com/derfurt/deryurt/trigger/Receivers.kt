@@ -15,17 +15,24 @@ class NetworkTriggerReceiver : BroadcastReceiver() {
     }
 }
 
-/** Bildirimdeki "Tekrar dene". */
+/** Bildirimdeki "Tekrar dene" ve "Diğer cihazdan çıkar". */
 class ActionReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {
-        if (intent.action == ACTION_RETRY) {
-            Notifier.cancelResult(context)
-            LoginWork.enqueue(context, manual = true, source = "notif_retry")
+        when (intent.action) {
+            ACTION_RETRY -> {
+                Notifier.cancelResult(context)
+                LoginWork.enqueue(context, manual = true, source = "notif_retry")
+            }
+            ACTION_KICK -> {
+                Notifier.cancelResult(context)
+                LoginWork.enqueue(context, manual = true, source = "notif_kick", kick = true)
+            }
         }
     }
 
     companion object {
         const val ACTION_RETRY = "com.derfurt.deryurt.action.RETRY"
+        const val ACTION_KICK = "com.derfurt.deryurt.action.KICK_OTHER"
     }
 }
 
@@ -38,7 +45,7 @@ class RearmReceiver : BroadcastReceiver() {
                 NetworkWatch.arm(context, force = true)
                 val store = StatusStore(context)
                 if (store.autoLogin) LoginWork.schedulePeriodic(context)
-                if (store.watchSession) PortalWatchService.start(context)
+                if (store.watchActive) PortalWatchService.start(context)
             }
         }
     }
